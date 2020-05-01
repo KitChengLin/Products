@@ -48,9 +48,26 @@
           <v-col cols="12" md="10">
             <v-hover v-slot:default="{ hover }" open-delay="100">
               <v-card v-if="products" :elevation="hover ? 8 : 1">
+                <template>
+                  <v-toolbar color="grey darken-3" dark>
+                    <v-toolbar-title>
+                      Lista de productos
+                    </v-toolbar-title>
+                    <v-divider class="mx-4" inset vertical></v-divider>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-cart-arrow-down"
+                      label="Buscar producto por nombre..."
+                      single-line
+                      hide-details
+                    ></v-text-field>
+                  </v-toolbar>
+                </template>
                 <v-data-table
                   :headers="headers"
-                  :items="products"
+                  :items="filter"
+                  :search:="search"
                   :items-per-page="15"
                   class="elevation-1"
                 >
@@ -98,6 +115,7 @@ export default {
         { text: "Cantidad", value: "quantity", sortable: false },
         { text: "Precio", value: "price", sortable: false }
       ],
+      search: "",
       data: null,
       addproduct: false,
       products: null,
@@ -110,6 +128,16 @@ export default {
   },
   mounted() {
     this.fetchproducts();
+  },
+  computed: {
+    filter() {
+      if (this.search !== "") {
+        return this.products.filter(products =>
+          products.name.toLowerCase().match(this.search.toLowerCase())
+        );
+      }
+      return this.products;
+    }
   },
   methods: {
     fetchproducts() {
