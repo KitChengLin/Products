@@ -9,9 +9,15 @@
               <v-spacer></v-spacer>
               <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" class="ma-1" style="cursor: pointer;" color="primary lighten-1" fab xl-small dark @click="showsinister(props.item.slug)"><v-icon large dark>mdi-cart-arrow-down</v-icon></v-btn>
+                <v-btn v-on="on" class="ma-1" style="cursor: pointer;" color="primary lighten-1" fab xl-small dark @click="showaddproduct()"><v-icon large dark>mdi-cart-plus</v-icon></v-btn>
               </template>
               <span>Añadir producto</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" class="ma-1" style="cursor: pointer;" color="green lighten-1" fab xl-small dark @click="showpayproduct()"><v-icon large dark>mdi-credit-card-outline</v-icon></v-btn>
+              </template>
+              <span>Pagar productos</span>
             </v-tooltip>
             </v-card-title>
           </v-card>
@@ -42,6 +48,12 @@
       </v-row>
       </v-list-item-content>
     </v-list-item>
+    <v-dialog v-model="addproduct" persistent max-width="600px">
+      <AddProduct v-if="products" @close="addproduct = false"
+      :products="products"
+      >
+      </AddProduct>
+    </v-dialog>
   </div>
 </template>
 
@@ -49,6 +61,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import AddProduct from './AddProducts'
  
 Vue.use(VueAxios, axios)
   export default {
@@ -59,13 +72,17 @@ Vue.use(VueAxios, axios)
         headers: [
           { text: 'Sku', value: 'sku', sortable: false },
           { text: 'Nombre', value: 'name', sortable: false },
-          { text: 'Quantity', value: 'quantity', sortable: false },
+          { text: 'Cantidad', value: 'quantity', sortable: false },
           { text: 'Precio', value: 'price', sortable: false }
         ],
         data: null,
+        addproduct: false,
         products: null,
         token: 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkM2NIVUVibVJoc1EzeXhNbzV2VnliSTFzaDZCSDJZRCIsImlhdCI6MTU4NTkzMjYzNDU0OH0.tMSht_M3ryQl5IqCirhYR1gb8j3FQ26vILT4Qpx4XrdFz-zUmqbgFYiKTaZHPpB85etRIMhxVoZf6tOrHy0fnA'
       }
+    },
+    components: {
+      AddProduct
     },
     mounted() {
       this.fetchproducts()
@@ -80,6 +97,12 @@ Vue.use(VueAxios, axios)
           this.data=response.data
           this.products = this.data.order.items.map(function(data) { return {sku: data.sku, name: data.name, quantity: data.quantity, price: data.price}})
         })
+      },
+      showaddproduct () {
+        this.addproduct = true
+      },
+      showpayproduct () {
+
       }
     }
   }
