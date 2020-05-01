@@ -5,13 +5,19 @@
       class="grey darken-3"
       dark
     >
-      <v-icon class="display-1">mdi-cart-arrow-down</v-icon>
-      <span class="display-1 font-weight-bold">Products</span>
-      <v-spacer></v-spacer>
+      <v-icon class="display-1">mdi-cart</v-icon>
+      <span class="display-1 font-weight-bold">Productos</span>
+    <v-divider></v-divider>
     </v-app-bar>
-
     <v-content>
       <Products/>
+      <v-footer 
+      absolute
+      class="font-weight-end grey darken-2"
+      dark>
+        <v-spacer></v-spacer>
+        <div>&copy; {{ new Date().getFullYear() }} - <strong>kitchenglin</strong> </div>
+      </v-footer>
     </v-content>
   </v-app>
 </template>

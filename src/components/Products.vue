@@ -1,76 +1,86 @@
 <template>
-    <v-col class="text-center">
-        <v-card style="margin-left:1vh; margin-top:1vh; margin-right:1vh;">
-          <v-data-table
-          :headers="headers"
-          :items-per-page="15">
-          </v-data-table>
-        </v-card>
-    </v-col>
+  <div v-if="data">
+    <v-list-item>
+      <v-list-item-content>
+      <v-row>
+        <v-col cols="12" md="2">
+          <v-card color="grey darken-3" dark>
+            <v-card-title>Orden: {{data.order.number}}
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" class="ma-1" style="cursor: pointer;" color="primary lighten-1" fab xl-small dark @click="showsinister(props.item.slug)"><v-icon large dark>mdi-cart-arrow-down</v-icon></v-btn>
+              </template>
+              <span>Añadir producto</span>
+            </v-tooltip>
+            </v-card-title>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="10">
+          <v-hover
+            v-slot:default="{ hover }"
+            open-delay="100"
+          >
+            <v-card v-if="products" :elevation="hover ? 8 : 1">
+              <v-data-table
+                :headers="headers"
+                :items="products"
+                :items-per-page="15"
+                class="elevation-1">
+                <template slot="item" slot-scope="props">
+                <tr>
+                  <td class="text-xs-right">{{props.item.sku}}</td>
+                  <td class="text-xs-right">{{props.item.name}}</td>
+                  <td class="text-xs-right">{{props.item.quantity}}</td>
+                  <td class="text-xs-right">{{props.item.price}}</td>
+                </tr>
+                </template>
+              </v-data-table>
+            </v-card>
+          </v-hover>
+        </v-col>
+      </v-row>
+      </v-list-item-content>
+    </v-list-item>
+  </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+ 
+Vue.use(VueAxios, axios)
   export default {
     name: 'Products',
 
-    data: () => ({
-      headers: [
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Iron (%)', value: 'iron' },
-      ],
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/layout/pre-defined',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
+    data () {
+      return {
+        headers: [
+          { text: 'Sku', value: 'sku', sortable: false },
+          { text: 'Nombre', value: 'name', sortable: false },
+          { text: 'Quantity', value: 'quantity', sortable: false },
+          { text: 'Precio', value: 'price', sortable: false }
+        ],
+        data: null,
+        products: null,
+        token: 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkM2NIVUVibVJoc1EzeXhNbzV2VnliSTFzaDZCSDJZRCIsImlhdCI6MTU4NTkzMjYzNDU0OH0.tMSht_M3ryQl5IqCirhYR1gb8j3FQ26vILT4Qpx4XrdFz-zUmqbgFYiKTaZHPpB85etRIMhxVoZf6tOrHy0fnA'
+      }
+    },
+    mounted() {
+      this.fetchproducts()
+    },
+    methods: {
+      fetchproducts () {
+        Vue.axios.get("https://eshop-deve.herokuapp.com/api/v2/orders/2117155815564", {
+          headers: {
+            Authorization: this.token
+          }
+        }).then((response) => {
+          this.data=response.data
+          this.products = this.data.order.items.map(function(data) { return {sku: data.sku, name: data.name, quantity: data.quantity, price: data.price}})
+        })
+      }
+    }
   }
 </script>
