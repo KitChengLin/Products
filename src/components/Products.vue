@@ -102,7 +102,7 @@ Vue.use(VueAxios, axios)
         this.addproduct = true
       },
       showpayproduct () {
-
+        this.$swal("Pago recibido!", "Se ha realizado sadisfactoriamente el pago!", "success")
       }
     }
   }

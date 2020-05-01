@@ -55,16 +55,16 @@ export default {
     return {
       edited: -1,
       editedItem: {
-      sku: null,
-      name: null,
-      quantity: null,
-      price: null,
+      sku: 0,
+      name: '',
+      quantity: 0,
+      price: 0,
       },
       defaultItem: {
-      sku: null,
-      name: null,
-      quantity: null,
-      price: null,
+      sku: 0,
+      name: '',
+      quantity: 0,
+      price: 0,
       },
       formHasErrors: false,
       rules: {
@@ -89,9 +89,9 @@ export default {
         this.products.push(this.editedItem)
       }
       this.closeModal()
-      this.$refs.form.reset()
+      this.$swal("Cambios guardados", "Se ha añadido un nuevo producto", "success")
     } else {
-        alert("Faltan datos")
+      this.$swal("Ha ocurrido un error!", "Complete el formulario", "error")
     }
     },
   }
